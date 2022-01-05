@@ -16,25 +16,50 @@ public class CardModel : ScriptableObject
     [SerializeField]
     private int _levelMin;
 
+    [SerializeField]
+    private int _levelToUpgrade;
+
+    #endregion
+
+    #region Fields
+
+    private bool _isLevelUp = true;
+
     #endregion
 
     #region Methods
 
     private void OnValidate()
     {
-        CheckMaxLevel(_currentLevel);
+        CheckMaxLevel(_currentLevel, _levelMax);
+        CheckLevelToUpgrade(_levelToUpgrade);
+        CheckLevelUp(_levelToUpgrade, _currentLevel, _levelMax);
     }
 
-    private void CheckMaxLevel(int currentLevel)
+    private void CheckMaxLevel(int currentLevel, int levelMax)
     {
-        if (currentLevel >= _levelMax)
-        {
-            if (_currentLevel > _levelMax)
-            {
-                throw new Exception("Current level can't be higher than Level Max");
-            }
 
-            _currentLevel = _levelMax;
+       _currentLevel = Mathf.Clamp(currentLevel, 1, levelMax);
+    }
+
+    private void CheckLevelToUpgrade(int levelToUpgrade)
+    {
+        _levelToUpgrade = Mathf.Clamp(levelToUpgrade, 1, 10);
+    }
+
+    private bool CheckLevelUp(int levelToUpgrade, int currentLevel, int levelMax)
+    {
+        if (levelToUpgrade + currentLevel > levelMax)
+        {
+            return _isLevelUp = false;
+        }
+        else if(levelToUpgrade + currentLevel == levelMax)
+        {
+            return _isLevelUp;
+        }
+        else
+        {
+            return _isLevelUp = false;
         }
     }
 
@@ -45,6 +70,10 @@ public class CardModel : ScriptableObject
     public int CurrentLevel => _currentLevel;
 
     public int LevelMax => _levelMax;
+
+    public int LevelToUpgrade => _levelToUpgrade;
+
+    public bool LevelUpResult => _isLevelUp;
 
     #endregion
 }

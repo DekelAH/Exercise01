@@ -15,3 +15,4 @@ MonoBehaviour:
   _currentLevel: 2
   _levelMax: 7
   _levelMin: 1
+  _levelToUpgrade: 5
